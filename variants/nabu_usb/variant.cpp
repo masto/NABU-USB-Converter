@@ -20,7 +20,26 @@
 
 /*
  * Pins descriptions
+ *
+ * Note re: NABU USB Converter
+ * My strategy here is to leave as much of the trinket_m0 mapping alone as I
+ * can, while adding what's necessary for this board to work.
+ * It might have been cleaner to throw it away and start fresh, but I'm hoping
+ * to retain some element of backward compatibility and not track down every
+ * place that might be relying on these pin indexes.
  */
+// JOY2_B2 11 PA08 D0
+// JOY1_B1 12 PA09 D6
+// JOY1_UP 17 PA16 D12
+// JOY1_DN 18 PA17 D23
+// JOY1_L 19 PA18 D24
+// JOY1_R 20 PA19 D25
+// JOY1_B2 21 PA22 D26
+// JOY2_R 22 PA23 D27
+// JOY2_B1 25 PA27 D28
+// JOY2_L 27 PA28 D9
+// JOY2_UP 31 PA30 D19
+// JOY2_DN 32 PA31 D20
 const PinDescription g_APinDescription[] =
     {
         // GPIO 0-4 on external pads
@@ -41,7 +60,8 @@ const PinDescription g_APinDescription[] =
 
         // D5, same as D0 but on sercom2 (for SPI sercommin')
         {PORTA, 8, PIO_SERCOM, (PIN_ATTR_DIGITAL | PIN_ATTR_PWM | PIN_ATTR_TIMER), ADC_Channel16, PWM0_CH0, TCC0_CH0, EXTERNAL_INT_NMI}, // TCC0/WO[0]
-                                                                                                                                         // D6, same as D2 but on sercom2 (for SPI sercommin')
+
+        // D6, same as D2 but on sercom2 (for SPI sercommin')
         {PORTA, 9, PIO_SERCOM, (PIN_ATTR_DIGITAL | PIN_ATTR_PWM | PIN_ATTR_TIMER), ADC_Channel17, PWM0_CH1, TCC0_CH1, EXTERNAL_INT_9}, // TCC0/WO[1]
 
         // GPIO 7 & 8 - DotStar internal data/clock
@@ -55,23 +75,23 @@ const PinDescription g_APinDescription[] =
         {PORTA, 24, PIO_COM, PIN_ATTR_NONE, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_NONE}, // USB/DM - GPIO #6
         {PORTA, 25, PIO_COM, PIN_ATTR_NONE, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_NONE}, // USB/DP - GPIO #7
 
-        // GPIO 12 is a placeholder, same as D13
-        {PORTA, 10, PIO_DIGITAL, (PIN_ATTR_DIGITAL), No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_10}, // TX: SERCOM0/PAD[2]
+        // GPIO 12 = PA16
+        {PORTA, 16, PIO_DIGITAL, (PIN_ATTR_DIGITAL), No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_10}, // TX: SERCOM0/PAD[2]
 
         // GPIO 13 (LED)
         {PORTA, 10, PIO_DIGITAL, (PIN_ATTR_DIGITAL), No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_10}, // TX: SERCOM0/PAD[2]
 
         // Digital 14 - 18, Analog A0-A4
         // A0 same as D1
-        {PORTA, 2, PIO_ANALOG, PIN_ATTR_ANALOG, ADC_Channel0, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_2}, // ADC/AIN[0]
-                                                                                                         // A1, same as D2
-        {PORTA, 9, PIO_ANALOG, (PIN_ATTR_ANALOG | PIN_ATTR_DIGITAL | PIN_ATTR_PWM | PIN_ATTR_TIMER), ADC_Channel17, PWM0_CH1, TCC0_CH1, EXTERNAL_INT_9}, // TCC0/WO[1]
-                                                                                                                                                         // A2, same as D0
+        {PORTA, 2, PIO_ANALOG, PIN_ATTR_ANALOG, ADC_Channel0, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_2},                                                   // ADC/AIN[0]
+                                                                                                                                                           // A1, same as D2
+        {PORTA, 9, PIO_ANALOG, (PIN_ATTR_ANALOG | PIN_ATTR_DIGITAL | PIN_ATTR_PWM | PIN_ATTR_TIMER), ADC_Channel17, PWM0_CH1, TCC0_CH1, EXTERNAL_INT_9},   // TCC0/WO[1]
+                                                                                                                                                           // A2, same as D0
         {PORTA, 8, PIO_ANALOG, (PIN_ATTR_ANALOG | PIN_ATTR_DIGITAL | PIN_ATTR_PWM | PIN_ATTR_TIMER), ADC_Channel16, PWM0_CH0, TCC0_CH0, EXTERNAL_INT_NMI}, // TCC0/WO[0]
                                                                                                                                                            // A3, same as D3
-        {PORTA, 7, PIO_ANALOG, (PIN_ATTR_ANALOG | PIN_ATTR_DIGITAL | PIN_ATTR_PWM | PIN_ATTR_TIMER), ADC_Channel7, PWM1_CH1, TCC1_CH1, EXTERNAL_INT_7}, // TCC1/WO[1]
-                                                                                                                                                        // A4, same as D4
-        {PORTA, 6, PIO_ANALOG, (PIN_ATTR_ANALOG | PIN_ATTR_DIGITAL | PIN_ATTR_PWM | PIN_ATTR_TIMER), ADC_Channel6, PWM1_CH0, TCC1_CH0, EXTERNAL_INT_6}, // TCC1/WO[0]
+        {PORTA, 7, PIO_ANALOG, (PIN_ATTR_ANALOG | PIN_ATTR_DIGITAL | PIN_ATTR_PWM | PIN_ATTR_TIMER), ADC_Channel7, PWM1_CH1, TCC1_CH1, EXTERNAL_INT_7},    // TCC1/WO[1]
+                                                                                                                                                           // A4, same as D4
+        {PORTA, 6, PIO_ANALOG, (PIN_ATTR_ANALOG | PIN_ATTR_DIGITAL | PIN_ATTR_PWM | PIN_ATTR_TIMER), ADC_Channel6, PWM1_CH0, TCC1_CH0, EXTERNAL_INT_6},    // TCC1/WO[0]
 
         // GPIO 19 & 20 (SWCLK & SWDIO)
         // --------------------------
@@ -81,6 +101,15 @@ const PinDescription g_APinDescription[] =
         // Placeholder #21 & 22 for 'txled' and 'rxled'
         {PORTA, 14, PIO_DIGITAL, (PIN_ATTR_DIGITAL), No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_14},
         {PORTA, 15, PIO_DIGITAL, (PIN_ATTR_DIGITAL | PIN_ATTR_PWM | PIN_ATTR_TIMER), No_ADC_Channel, PWM3_CH1, TC3_CH1, EXTERNAL_INT_15},
+
+        // GPIO 23 = PA17, 24 = PA18, 25 = PA19, 26 = PA22, 27 = PA23, 28 = PA27
+        {PORTA, 17, PIO_DIGITAL, (PIN_ATTR_DIGITAL), No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_10}, // TX: SERCOM0/PAD[2]
+        {PORTA, 18, PIO_DIGITAL, (PIN_ATTR_DIGITAL), No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_10}, // TX: SERCOM0/PAD[2]
+        {PORTA, 19, PIO_DIGITAL, (PIN_ATTR_DIGITAL), No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_10}, // TX: SERCOM0/PAD[2]
+        {PORTA, 22, PIO_DIGITAL, (PIN_ATTR_DIGITAL), No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_10}, // TX: SERCOM0/PAD[2]
+        {PORTA, 23, PIO_DIGITAL, (PIN_ATTR_DIGITAL), No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_10}, // TX: SERCOM0/PAD[2]
+        {PORTA, 27, PIO_DIGITAL, (PIN_ATTR_DIGITAL), No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_10}, // TX: SERCOM0/PAD[2]
+
 };
 
 const void *g_apTCInstances[TCC_INST_NUM + TC_INST_NUM] = {TCC0, TCC1, TCC2, TC3, TC4, TC5};
