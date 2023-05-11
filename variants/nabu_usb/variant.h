@@ -16,8 +16,8 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef _VARIANT_ARDUINO_ZERO_
-#define _VARIANT_ARDUINO_ZERO_
+#ifndef _VARIANT_NABU_USB_
+#define _VARIANT_NABU_USB_
 
 // The definitions here needs a SAMD core >=1.6.6
 #define ARDUINO_SAMD_VARIANT_COMPLIANCE 10606
@@ -201,3 +201,4 @@ extern Uart Serial1;
 #define SERIAL_PORT_HARDWARE Serial1
 #define SERIAL_PORT_HARDWARE_OPEN Serial1
 
+#endif /* _VARIANT_NABU_USB_ */
