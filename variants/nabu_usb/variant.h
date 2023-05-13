@@ -90,6 +90,19 @@ extern "C"
 #define PIN_DOTSTAR_DATA (7u)
 #define PIN_DOTSTAR_CLK (8u)
 #define DOTSTAR_NUM (1u)
+// Joysticks
+#define PIN_JOY1_UP (12u)
+#define PIN_JOY1_DN (23u)
+#define PIN_JOY1_L (24u)
+#define PIN_JOY1_R (25u)
+#define PIN_JOY1_B1 (6u)
+#define PIN_JOY1_B2 (26u)
+#define PIN_JOY2_UP (19u)
+#define PIN_JOY2_DN (20u)
+#define PIN_JOY2_L (9u)
+#define PIN_JOY2_R (27u)
+#define PIN_JOY2_B1 (28u)
+#define PIN_JOY2_B2 (0u)
 
 /*
  * Analog pins
