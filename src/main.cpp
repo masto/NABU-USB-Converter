@@ -1,15 +1,7 @@
 #include <hidboot.h>
 
-// On SAMD boards where the native USB port is also the serial console, use
-// Serial1 for the serial console. This applies to all SAMD boards except for
-// Arduino Zero and M0 boards.
-#if (USB_VID == 0x2341 && defined(ARDUINO_SAMD_ZERO)) || (USB_VID == 0x2a03 && defined(ARDUINO_SAM_ZERO))
-#define SerialDebug SERIAL_PORT_MONITOR
-#define SerialConsole Serial1
-#else
 #define SerialDebug Serial1
 #define SerialConsole Serial1
-#endif
 
 // ASCII output goes to this console UART port which might be different from
 // the debug port.
@@ -20,9 +12,12 @@
 
 #define DEBUG_ON 0
 #if DEBUG_ON
-#define dbbegin(...) SerialDebug.begin(__VA_ARGS__)
-#define dbprint(...) SerialDebug.print(__VA_ARGS__)
-#define dbprintln(...) SerialDebug.println(__VA_ARGS__)
+// #define dbbegin(...) SerialDebug.begin(__VA_ARGS__)
+// #define dbprint(...) SerialDebug.print(__VA_ARGS__)
+// #define dbprintln(...) SerialDebug.println(__VA_ARGS__)
+#define dbbegin(...)
+#define dbprint(...) consprint(__VA_ARGS__)
+#define dbprintln(...) consprintln(__VA_ARGS__)
 #else
 #define dbbegin(...)
 #define dbprint(...)
@@ -173,11 +168,21 @@ HIDBoot<HID_PROTOCOL_KEYBOARD> HidKeyboard(&UsbH);
 
 KbdRptParser Prs;
 
+unsigned int JOY_PINS[] = {PIN_JOY1_UP, PIN_JOY1_DN, PIN_JOY1_L, PIN_JOY1_R, PIN_JOY1_B1, PIN_JOY1_B2, PIN_JOY2_UP, PIN_JOY2_DN, PIN_JOY2_L, PIN_JOY2_R, PIN_JOY2_B1, PIN_JOY2_B2};
+
 void setup()
 {
   // Turn off built-in RED LED
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
+
+  // Set input pins
+  for (auto pin : JOY_PINS)
+  {
+    pinMode(pin, INPUT_PULLUP);
+    dbprint("init pin ");
+    dbprintln(pin);
+  }
 
   dbbegin(115200);
   dbprintln("Start");
@@ -198,6 +203,26 @@ void SendPing()
   dbprintln("PING");
 }
 
+unsigned char isPressed(uint32_t pin)
+{
+  return digitalRead(pin) == LOW ? 1 : 0;
+}
+
+unsigned char getJoyState(int stick)
+{
+  unsigned char state = 0b10100000;
+
+  state |= isPressed(PIN_JOY1_B1) << 4;
+  state |= isPressed(PIN_JOY1_UP) << 3;
+  state |= isPressed(PIN_JOY1_R) << 2;
+  state |= isPressed(PIN_JOY1_DN) << 1;
+  state |= isPressed(PIN_JOY1_L);
+
+  return state;
+}
+
+unsigned char joyState = 0b10100000;
+
 void loop()
 {
   UsbH.Task();
@@ -206,5 +231,14 @@ void loop()
   {
     SendPing();
     last_ping = millis();
+  }
+
+  unsigned char newJoyState = getJoyState(1);
+  if (joyState != newJoyState)
+  {
+    joyState = newJoyState;
+    // Output joystick state change
+    conswrite(0x80);
+    conswrite(joyState);
   }
 }
