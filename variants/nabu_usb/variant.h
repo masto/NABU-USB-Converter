@@ -133,6 +133,12 @@ extern "C"
 #define PIN_SERIAL1_TX (4ul) // PA06
 #define PAD_SERIAL1_TX (UART_TX_PAD_2)
 
+// Serial2 (sercom 1-alt, on joy2 port)
+#define PIN_SERIAL2_RX (20ul) // PA31
+#define PAD_SERIAL2_RX (SERCOM_RX_PAD_3)
+#define PIN_SERIAL2_TX (19ul) // PA30
+#define PAD_SERIAL2_TX (UART_TX_PAD_2)
+
 /*
  * SPI Interfaces
  */
@@ -190,6 +196,7 @@ extern SERCOM sercom2;
 extern SERCOM sercom3;
 
 extern Uart Serial1;
+extern Uart Serial2;
 
 #endif
 

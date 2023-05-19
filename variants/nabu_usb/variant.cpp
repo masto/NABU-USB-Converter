@@ -95,8 +95,8 @@ const PinDescription g_APinDescription[] =
 
         // GPIO 19 & 20 (SWCLK & SWDIO)
         // --------------------------
-        {PORTA, 30, PIO_TIMER, PIN_ATTR_NONE, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_NONE},
-        {PORTA, 31, PIO_TIMER, PIN_ATTR_NONE, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_NONE},
+        {PORTA, 30, PIO_SERCOM_ALT, PIN_ATTR_NONE, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_NONE},
+        {PORTA, 31, PIO_SERCOM_ALT, PIN_ATTR_NONE, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_NONE},
 
         // Placeholder #21 & 22 for 'txled' and 'rxled'
         {PORTA, 14, PIO_DIGITAL, (PIN_ATTR_DIGITAL), No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_14},
@@ -121,8 +121,14 @@ SERCOM sercom2(SERCOM2);
 SERCOM sercom3(SERCOM3);
 
 Uart Serial1(&sercom0, PIN_SERIAL1_RX, PIN_SERIAL1_TX, PAD_SERIAL1_RX, PAD_SERIAL1_TX);
+Uart Serial2(&sercom1, PIN_SERIAL2_RX, PIN_SERIAL2_TX, PAD_SERIAL2_RX, PAD_SERIAL2_TX);
 
 void SERCOM0_Handler()
 {
   Serial1.IrqHandler();
+}
+
+void SERCOM1_Handler()
+{
+  Serial2.IrqHandler();
 }
